@@ -2,14 +2,16 @@
 Test script to validate the chatbot structure and components
 """
 
-import sys
 import os
-sys.path.insert(0, '/home/runner/work/chainlit_sandbox/chainlit_sandbox')
+import sys
+
+sys.path.insert(0, "/home/runner/work/chainlit_sandbox/chainlit_sandbox")
 
 # Test imports
 print("Testing imports...")
 try:
     import chainlit as cl
+
     print("✓ Chainlit imported successfully")
 except ImportError as e:
     print(f"✗ Failed to import chainlit: {e}")
@@ -17,6 +19,7 @@ except ImportError as e:
 
 try:
     import openai
+
     print("✓ OpenAI imported successfully")
 except ImportError as e:
     print(f"✗ Failed to import openai: {e}")
@@ -24,6 +27,7 @@ except ImportError as e:
 
 try:
     from dotenv import load_dotenv
+
     print("✓ python-dotenv imported successfully")
 except ImportError as e:
     print(f"✗ Failed to import dotenv: {e}")
@@ -33,6 +37,7 @@ except ImportError as e:
 print("\nTesting app.py module...")
 try:
     import app
+
     print("✓ app.py module imported successfully")
 except Exception as e:
     print(f"✗ Failed to import app.py: {e}")
@@ -41,17 +46,17 @@ except Exception as e:
 # Validate key components exist
 print("\nValidating components...")
 components = [
-    'SYSTEM_PROMPT',
-    'PERFORMANCE_EVAL_PROMPT',
-    'TOPIC_ANALYSIS_PROMPT',
-    'STRATEGY_PROMPT',
-    'RESPONSE_GENERATION_PROMPT',
-    'analyze_performance',
-    'analyze_topic',
-    'determine_strategy',
-    'generate_response',
-    'start',
-    'main'
+    "SYSTEM_PROMPT",
+    "PERFORMANCE_EVAL_PROMPT",
+    "TOPIC_ANALYSIS_PROMPT",
+    "STRATEGY_PROMPT",
+    "RESPONSE_GENERATION_PROMPT",
+    "analyze_performance",
+    "analyze_topic",
+    "determine_strategy",
+    "generate_response",
+    "start",
+    "main",
 ]
 
 for component in components:
@@ -64,11 +69,11 @@ for component in components:
 # Validate prompt structure
 print("\nValidating prompt structures...")
 prompts = {
-    'SYSTEM_PROMPT': app.SYSTEM_PROMPT,
-    'PERFORMANCE_EVAL_PROMPT': app.PERFORMANCE_EVAL_PROMPT,
-    'TOPIC_ANALYSIS_PROMPT': app.TOPIC_ANALYSIS_PROMPT,
-    'STRATEGY_PROMPT': app.STRATEGY_PROMPT,
-    'RESPONSE_GENERATION_PROMPT': app.RESPONSE_GENERATION_PROMPT
+    "SYSTEM_PROMPT": app.SYSTEM_PROMPT,
+    "PERFORMANCE_EVAL_PROMPT": app.PERFORMANCE_EVAL_PROMPT,
+    "TOPIC_ANALYSIS_PROMPT": app.TOPIC_ANALYSIS_PROMPT,
+    "STRATEGY_PROMPT": app.STRATEGY_PROMPT,
+    "RESPONSE_GENERATION_PROMPT": app.RESPONSE_GENERATION_PROMPT,
 }
 
 for name, prompt in prompts.items():
@@ -80,10 +85,7 @@ for name, prompt in prompts.items():
 
 # Check for key parody elements in SYSTEM_PROMPT
 print("\nValidating parody elements...")
-parody_keywords = [
-    'hustle', 'grateful', 'Switch 1', 'Switch 2', 
-    'exclamation', 'grinding', 'journey', 'parody'
-]
+parody_keywords = ["hustle", "grateful", "Switch 1", "Switch 2", "exclamation", "grinding", "journey", "parody"]
 
 found_keywords = []
 for keyword in parody_keywords:
@@ -99,14 +101,10 @@ else:
 
 # Check for goal-seeking architecture
 print("\nValidating goal-seeking architecture...")
-async_functions = [
-    'analyze_performance',
-    'analyze_topic', 
-    'determine_strategy',
-    'generate_response'
-]
+async_functions = ["analyze_performance", "analyze_topic", "determine_strategy", "generate_response"]
 
 import inspect
+
 for func_name in async_functions:
     func = getattr(app, func_name)
     if inspect.iscoroutinefunction(func):
@@ -115,9 +113,9 @@ for func_name in async_functions:
         print(f"✗ {func_name} is not async")
         sys.exit(1)
 
-print("\n" + "="*50)
+print("\n" + "=" * 50)
 print("✅ ALL TESTS PASSED!")
-print("="*50)
+print("=" * 50)
 print("\nThe chatbot structure is valid and ready to run.")
 print("To start the chatbot, run:")
 print("  chainlit run app.py -w")

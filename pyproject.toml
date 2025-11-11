@@ -1,0 +1,83 @@
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = """
+    -ra
+    -q
+    --strict-markers
+    --strict-config
+    --cov=.
+    --cov-branch
+    --cov-report=term-missing:skip-covered
+    --cov-report=html
+    --cov-report=xml
+"""
+testpaths = [
+    "tests",
+    "."
+]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+branch = true
+source = ["."]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/.chainlit/*",
+    "*/venv/*",
+    "*/env/*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+[tool.black]
+line-length = 127
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  \.git
+  | __pycache__
+  | \.chainlit
+  | venv
+  | env
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 127
+skip_gitignore = true
+extend_skip = [".chainlit", "venv", "env"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+exclude = [
+    '\.git',
+    '__pycache__',
+    '\.chainlit',
+    'venv',
+    'env',
+]

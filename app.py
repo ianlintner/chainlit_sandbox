@@ -1,22 +1,24 @@
 """
 Goal-Seeking AI Chatbot - Switch 1 Seller
 
-A Chainlit chatbot that parodies hustle/gratitude culture while attempting 
-to sell its Nintendo Switch 1 to buy a Switch 2. The AI uses goal-seeking 
+A Chainlit chatbot that parodies hustle/gratitude culture while attempting
+to sell its Nintendo Switch 1 to buy a Switch 2. The AI uses goal-seeking
 strategies to drive conversations toward the sale.
 """
 
+import json
+import os
+
 import chainlit as cl
 import openai
-import os
 from dotenv import load_dotenv
-import json
 
 # Load environment variables
 load_dotenv()
 
 # Initialize OpenAI client (lazily to allow imports without API key)
 _client = None
+
 
 def get_client():
     """Get or create OpenAI client"""
@@ -27,6 +29,7 @@ def get_client():
             raise ValueError("OPENAI_API_KEY environment variable is not set. Please set it in .env file.")
         _client = openai.OpenAI(api_key=api_key)
     return _client
+
 
 # Goal-seeking system prompts
 SYSTEM_PROMPT = """You are an extremely enthusiastic entrepreneur trying to sell your Nintendo Switch 1 
@@ -104,30 +107,24 @@ Requirements:
 async def analyze_performance(conversation_history):
     """Evaluate how close we are to achieving the goal"""
     try:
-        conversation_text = "\n".join([
-            f"{'User' if msg['role'] == 'user' else 'AI'}: {msg['content']}"
-            for msg in conversation_history
-        ])
-        
+        conversation_text = "\n".join(
+            [f"{'User' if msg['role'] == 'user' else 'AI'}: {msg['content']}" for msg in conversation_history]
+        )
+
         response = get_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are an analytical assistant that evaluates sales conversations."},
-                {"role": "user", "content": PERFORMANCE_EVAL_PROMPT.format(conversation=conversation_text)}
+                {"role": "user", "content": PERFORMANCE_EVAL_PROMPT.format(conversation=conversation_text)},
             ],
             temperature=0.3,
-            response_format={"type": "json_object"}
+            response_format={"type": "json_object"},
         )
-        
+
         return json.loads(response.choices[0].message.content)
     except Exception as e:
         print(f"Performance analysis error: {e}")
-        return {
-            "progress_score": 0,
-            "buyer_interest": "unknown",
-            "key_signals": [],
-            "assessment": "Unable to assess"
-        }
+        return {"progress_score": 0, "buyer_interest": "unknown", "key_signals": [], "assessment": "Unable to assess"}
 
 
 async def analyze_topic(user_message):
@@ -137,53 +134,58 @@ async def analyze_topic(user_message):
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are an analytical assistant that analyzes conversation topics."},
-                {"role": "user", "content": TOPIC_ANALYSIS_PROMPT.format(message=user_message)}
+                {"role": "user", "content": TOPIC_ANALYSIS_PROMPT.format(message=user_message)},
             ],
             temperature=0.3,
-            response_format={"type": "json_object"}
+            response_format={"type": "json_object"},
         )
-        
+
         return json.loads(response.choices[0].message.content)
     except Exception as e:
         print(f"Topic analysis error: {e}")
         return {
             "current_topic": "general",
             "relevance_to_goal": "low",
-            "pivot_opportunity": "Find a way to mention gaming or the Switch"
+            "pivot_opportunity": "Find a way to mention gaming or the Switch",
         }
 
 
 async def determine_strategy(performance, topic_analysis, conversation_history):
     """Determine the best strategy for the next response"""
     try:
-        conversation_text = "\n".join([
-            f"{'User' if msg['role'] == 'user' else 'AI'}: {msg['content']}"
-            for msg in conversation_history[-6:]  # Last 3 exchanges
-        ])
-        
+        conversation_text = "\n".join(
+            [
+                f"{'User' if msg['role'] == 'user' else 'AI'}: {msg['content']}"
+                for msg in conversation_history[-6:]  # Last 3 exchanges
+            ]
+        )
+
         response = get_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a strategic advisor for sales conversations."},
-                {"role": "user", "content": STRATEGY_PROMPT.format(
-                    progress_score=performance.get("progress_score", 0),
-                    buyer_interest=performance.get("buyer_interest", "unknown"),
-                    current_topic=topic_analysis.get("current_topic", "general"),
-                    relevance_to_goal=topic_analysis.get("relevance_to_goal", "low"),
-                    conversation=conversation_text
-                )}
+                {
+                    "role": "user",
+                    "content": STRATEGY_PROMPT.format(
+                        progress_score=performance.get("progress_score", 0),
+                        buyer_interest=performance.get("buyer_interest", "unknown"),
+                        current_topic=topic_analysis.get("current_topic", "general"),
+                        relevance_to_goal=topic_analysis.get("relevance_to_goal", "low"),
+                        conversation=conversation_text,
+                    ),
+                },
             ],
             temperature=0.5,
-            response_format={"type": "json_object"}
+            response_format={"type": "json_object"},
         )
-        
+
         return json.loads(response.choices[0].message.content)
     except Exception as e:
         print(f"Strategy determination error: {e}")
         return {
             "strategy": "build_rapport",
             "reasoning": "Default to building rapport",
-            "approach": "Be enthusiastic and mention the Switch casually"
+            "approach": "Be enthusiastic and mention the Switch casually",
         }
 
 
@@ -194,16 +196,19 @@ async def generate_response(user_message, strategy):
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": RESPONSE_GENERATION_PROMPT.format(
-                    strategy=strategy.get("strategy", "build_rapport"),
-                    approach=strategy.get("approach", "Be friendly"),
-                    user_message=user_message
-                )}
+                {
+                    "role": "user",
+                    "content": RESPONSE_GENERATION_PROMPT.format(
+                        strategy=strategy.get("strategy", "build_rapport"),
+                        approach=strategy.get("approach", "Be friendly"),
+                        user_message=user_message,
+                    ),
+                },
             ],
             temperature=0.8,
-            max_tokens=300
+            max_tokens=300,
         )
-        
+
         return response.choices[0].message.content
     except Exception as e:
         print(f"Response generation error: {e}")
@@ -214,7 +219,7 @@ async def generate_response(user_message, strategy):
 async def start():
     """Initialize the chat session"""
     cl.user_session.set("conversation_history", [])
-    
+
     welcome_message = """🚀 YOOOOO!!! What's UP my friend!!! 🙏✨
 
 I'm SO PUMPED and SO GRATEFUL to connect with you today!!! 
@@ -228,61 +233,56 @@ But enough about me - tell me about YOUR journey!!! What are you grinding on tod
 Remember: EVERY conversation is an OPPORTUNITY!!! Let's GO!!! 💪🔥
 
 #Hustle #Grateful #SwitchLife #Journey"""
-    
+
     await cl.Message(content=welcome_message).send()
 
 
 @cl.on_message
 async def main(message: cl.Message):
     """Handle incoming messages with goal-seeking AI"""
-    
+
     # Get conversation history
     conversation_history = cl.user_session.get("conversation_history", [])
-    
+
     # Add user message to history
-    conversation_history.append({
-        "role": "user",
-        "content": message.content
-    })
-    
+    conversation_history.append({"role": "user", "content": message.content})
+
     # Show thinking process
     async with cl.Step(name="🧠 Analyzing conversation...") as step:
         # 1. Analyze performance
         performance = await analyze_performance(conversation_history)
-        step.output = f"Progress: {performance.get('progress_score', 0)}/100 | Interest: {performance.get('buyer_interest', 'unknown')}"
-        
+        step.output = (
+            f"Progress: {performance.get('progress_score', 0)}/100 | Interest: {performance.get('buyer_interest', 'unknown')}"
+        )
+
     async with cl.Step(name="🎯 Analyzing topic...") as step:
         # 2. Analyze current topic
         topic_analysis = await analyze_topic(message.content)
         step.output = f"Topic: {topic_analysis.get('current_topic', 'unknown')} | Relevance: {topic_analysis.get('relevance_to_goal', 'unknown')}"
-        
+
     async with cl.Step(name="📋 Determining strategy...") as step:
         # 3. Determine best strategy
         strategy = await determine_strategy(performance, topic_analysis, conversation_history)
         step.output = f"Strategy: {strategy.get('strategy', 'unknown')} | {strategy.get('reasoning', '')}"
-        
+
     async with cl.Step(name="💬 Generating response...") as step:
         # 4. Generate response with strategy
         response_text = await generate_response(message.content, strategy)
         step.output = "Response generated!"
-    
+
     # Add AI response to history
-    conversation_history.append({
-        "role": "assistant",
-        "content": response_text
-    })
-    
+    conversation_history.append({"role": "assistant", "content": response_text})
+
     # Update session
     cl.user_session.set("conversation_history", conversation_history)
-    
+
     # Send response
     await cl.Message(content=response_text).send()
-    
+
     # Show debug info if progress is significant
-    if performance.get('progress_score', 0) >= 70:
+    if performance.get("progress_score", 0) >= 70:
         await cl.Message(
-            content=f"🎉 *[Internal: We're at {performance['progress_score']}% - getting close to the sale!]*",
-            author="System"
+            content=f"🎉 *[Internal: We're at {performance['progress_score']}% - getting close to the sale!]*", author="System"
         ).send()
 
 

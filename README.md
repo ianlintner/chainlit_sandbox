@@ -1,5 +1,10 @@
 # Goal-Seeking AI Chatbot - Switch 1 Seller 🎮💰
 
+[![Python Linting](https://github.com/ianlintner/chainlit_sandbox/workflows/Python%20Linting/badge.svg)](https://github.com/ianlintner/chainlit_sandbox/actions/workflows/lint.yml)
+[![Python Tests](https://github.com/ianlintner/chainlit_sandbox/workflows/Python%20Tests/badge.svg)](https://github.com/ianlintner/chainlit_sandbox/actions/workflows/test.yml)
+[![Security Checks](https://github.com/ianlintner/chainlit_sandbox/workflows/Security%20Checks/badge.svg)](https://github.com/ianlintner/chainlit_sandbox/actions/workflows/security.yml)
+[![Code Quality](https://github.com/ianlintner/chainlit_sandbox/workflows/Code%20Quality/badge.svg)](https://github.com/ianlintner/chainlit_sandbox/actions/workflows/code-quality.yml)
+
 A hilarious Chainlit demo featuring a goal-seeking AI chatbot that parodies hustle/gratitude culture while desperately trying to sell you its Nintendo Switch 1 to fund a Switch 2 purchase.
 
 ## 🎭 Overview
@@ -142,6 +147,42 @@ This is a demo project, but feel free to:
 - Improve the parody voice
 - Add more detailed analytics
 - Create alternative personalities
+
+### Development Workflow
+
+1. Install development dependencies:
+```bash
+pip install pytest pytest-asyncio pytest-cov pytest-mock black isort flake8 mypy
+```
+
+2. Run tests before committing:
+```bash
+python test_structure.py
+pytest
+```
+
+3. Format code:
+```bash
+black .
+isort .
+```
+
+4. Check code quality:
+```bash
+flake8 .
+mypy . --ignore-missing-imports
+```
+
+See [`.github/README.md`](.github/README.md) for detailed CI/CD documentation.
+
+## 🤖 GitHub Copilot Integration
+
+This repository is configured for GitHub Copilot agents:
+- **Code Reviewer**: Expert in Python and AI chatbot code review
+- **Test Engineer**: Specialist in Python testing
+- **Documentation Specialist**: Technical documentation expert
+
+Copilot agents help maintain code quality, testing coverage, and documentation.
 
 ## ⚠️ Disclaimer
 
