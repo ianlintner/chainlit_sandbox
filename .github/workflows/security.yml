@@ -9,9 +9,14 @@ on:
     # Run weekly on Monday at 9:00 AM UTC
     - cron: '0 9 * * 1'
 
+permissions:
+  contents: read
+
 jobs:
   dependency-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
     - uses: actions/checkout@v4
@@ -50,6 +55,8 @@ jobs:
 
   secret-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
     - uses: actions/checkout@v4
