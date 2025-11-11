@@ -15,8 +15,18 @@ import json
 # Load environment variables
 load_dotenv()
 
-# Initialize OpenAI client
-client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Initialize OpenAI client (lazily to allow imports without API key)
+_client = None
+
+def get_client():
+    """Get or create OpenAI client"""
+    global _client
+    if _client is None:
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY environment variable is not set. Please set it in .env file.")
+        _client = openai.OpenAI(api_key=api_key)
+    return _client
 
 # Goal-seeking system prompts
 SYSTEM_PROMPT = """You are an extremely enthusiastic entrepreneur trying to sell your Nintendo Switch 1 
@@ -99,7 +109,7 @@ async def analyze_performance(conversation_history):
             for msg in conversation_history
         ])
         
-        response = client.chat.completions.create(
+        response = get_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are an analytical assistant that evaluates sales conversations."},
@@ -123,7 +133,7 @@ async def analyze_performance(conversation_history):
 async def analyze_topic(user_message):
     """Analyze the current conversation topic"""
     try:
-        response = client.chat.completions.create(
+        response = get_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are an analytical assistant that analyzes conversation topics."},
@@ -151,7 +161,7 @@ async def determine_strategy(performance, topic_analysis, conversation_history):
             for msg in conversation_history[-6:]  # Last 3 exchanges
         ])
         
-        response = client.chat.completions.create(
+        response = get_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a strategic advisor for sales conversations."},
@@ -180,7 +190,7 @@ async def determine_strategy(performance, topic_analysis, conversation_history):
 async def generate_response(user_message, strategy):
     """Generate the actual chatbot response"""
     try:
-        response = client.chat.completions.create(
+        response = get_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
