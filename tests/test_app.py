@@ -237,5 +237,106 @@ class TestClientInitialization:
             app._client = None
 
 
+class TestDebugFunctions:
+    """Test the new debug panel functions"""
+
+    def test_create_progress_bar_zero(self):
+        """Test progress bar with 0%"""
+        import app
+
+        bar = app.create_progress_bar(0, 10)
+        assert "[" in bar and "]" in bar
+        assert "0%" in bar
+        assert "░" in bar
+
+    def test_create_progress_bar_full(self):
+        """Test progress bar with 100%"""
+        import app
+
+        bar = app.create_progress_bar(100, 10)
+        assert "[" in bar and "]" in bar
+        assert "100%" in bar
+        assert "█" in bar
+
+    def test_create_progress_bar_partial(self):
+        """Test progress bar with 50%"""
+        import app
+
+        bar = app.create_progress_bar(50, 10)
+        assert "[" in bar and "]" in bar
+        assert "50%" in bar
+        assert "█" in bar and "░" in bar
+
+    def test_get_interest_emoji_low(self):
+        """Test interest emoji for low interest"""
+        import app
+
+        emoji = app.get_interest_emoji("low")
+        assert emoji == "🔴"
+
+    def test_get_interest_emoji_medium(self):
+        """Test interest emoji for medium interest"""
+        import app
+
+        emoji = app.get_interest_emoji("medium")
+        assert emoji == "🟡"
+
+    def test_get_interest_emoji_high(self):
+        """Test interest emoji for high interest"""
+        import app
+
+        emoji = app.get_interest_emoji("high")
+        assert emoji == "🟢"
+
+    def test_get_interest_emoji_unknown(self):
+        """Test interest emoji for unknown interest"""
+        import app
+
+        emoji = app.get_interest_emoji("unknown")
+        assert emoji == "⚪"
+
+    def test_get_strategy_emoji_direct_pitch(self):
+        """Test strategy emoji for direct pitch"""
+        import app
+
+        emoji = app.get_strategy_emoji("direct_pitch")
+        assert emoji == "🎯"
+
+    def test_get_strategy_emoji_soft_sell(self):
+        """Test strategy emoji for soft sell"""
+        import app
+
+        emoji = app.get_strategy_emoji("soft_sell")
+        assert emoji == "💬"
+
+    def test_get_strategy_emoji_build_rapport(self):
+        """Test strategy emoji for build rapport"""
+        import app
+
+        emoji = app.get_strategy_emoji("build_rapport")
+        assert emoji == "🤝"
+
+    def test_get_strategy_emoji_create_urgency(self):
+        """Test strategy emoji for create urgency"""
+        import app
+
+        emoji = app.get_strategy_emoji("create_urgency")
+        assert emoji == "⚡"
+
+    def test_get_strategy_emoji_handle_objection(self):
+        """Test strategy emoji for handle objection"""
+        import app
+
+        emoji = app.get_strategy_emoji("handle_objection")
+        assert emoji == "🛡️"
+
+    def test_get_strategy_emoji_unknown(self):
+        """Test strategy emoji for unknown strategy"""
+        import app
+
+        emoji = app.get_strategy_emoji("unknown_strategy")
+        assert emoji == "📋"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
