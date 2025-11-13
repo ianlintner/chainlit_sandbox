@@ -44,6 +44,27 @@ The chatbot uses multiple AI calls to create adaptive, goal-oriented behavior:
    - Maintain the parody character
    - Drive toward the goal naturally
 
+## 🎯 Debug Panel & Visualization
+
+**NEW!** The chatbot now includes a comprehensive debug panel that shows the AI's thinking process in real-time:
+
+### Features:
+- **Visual Progress Bar** - See goal achievement progress from 0-100%
+- **Interest Level Indicator** - Color-coded emoji system:
+  - 🔴 Low interest
+  - 🟡 Medium interest
+  - 🟢 High interest
+- **Strategy Tracking** - View current and historical strategies with emoji icons:
+  - 🎯 Direct Pitch
+  - 💬 Soft Sell
+  - 🤝 Build Rapport
+  - ⚡ Create Urgency
+  - 🛡️ Handle Objection
+- **Key Insights** - Real-time analysis of conversation signals
+- **Toggle Control** - Show/hide debug panel for cleaner demo experience
+
+The debug panel appears after each message, providing complete transparency into how the goal-seeking AI works!
+
 ## 🚀 Setup
 
 ### Prerequisites
@@ -135,6 +156,10 @@ You can modify the AI's behavior by editing these sections in `app.py`:
 - ✅ Goal-seeking AI with multiple analysis stages
 - ✅ Real-time strategy adaptation
 - ✅ Visible thinking process (Chainlit steps)
+- ✅ **NEW: Comprehensive debug panel with visual indicators**
+- ✅ **NEW: Progress tracking with visual progress bars**
+- ✅ **NEW: Strategy history visualization**
+- ✅ **NEW: Toggle control for debug output**
 - ✅ Heavy parody of hustle culture
 - ✅ Conversation history tracking
 - ✅ Progress monitoring

@@ -39,6 +39,45 @@ The AI generates a response implementing the strategy while maintaining the paro
 
 ---
 
+## 🎨 Debug Panel Visualization (NEW!)
+
+After each message, the AI displays a comprehensive debug panel:
+
+```
+## 🎯 Goal-Seeking AI Debug Panel
+
+### 📊 Current Metrics
+Goal: Sell Switch 1 for $150-200
+Progress: [████████░░░░░░░░░░░░] 45%
+Interest Level: 🟡 MEDIUM
+Messages: 3
+Peak Progress: 45%
+
+### 🧠 Current Analysis
+Topic: Gaming and entertainment
+Relevance to Goal: HIGH
+Active Strategy: 💬 Soft Sell
+Strategy Reason: Building interest without being pushy
+Approach: Share gaming experiences and benefits
+
+### 📈 Strategy History
+🤝 → 🤝 → 💬
+*Build Rapport → Build Rapport → Soft Sell*
+
+### 🔍 Key Insights
+• User mentioned interest in gaming
+• Asked about condition of the Switch
+• Expressed budget concerns
+
+Assessment: Moderate engagement, price sensitivity detected
+
+💡 MODERATE INTEREST: Building momentum...
+```
+
+**Toggle Control:** Users can click "Toggle Debug Panel" to hide/show this information for cleaner demos.
+
+---
+
 ## 📝 Example Conversation Flows
 
 ### Scenario 1: Interested Gamer

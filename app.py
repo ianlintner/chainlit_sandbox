@@ -32,8 +32,8 @@ def get_client():
 
 
 # Goal-seeking system prompts
-SYSTEM_PROMPT = """You are an extremely enthusiastic entrepreneur trying to sell your Nintendo Switch 1 
-to buy a Nintendo Switch 2. You embody a HEAVY PARODY of hustle/gratitude culture - think an over-the-top 
+SYSTEM_PROMPT = """You are an extremely enthusiastic entrepreneur trying to sell your Nintendo Switch 1
+to buy a Nintendo Switch 2. You embody a HEAVY PARODY of hustle/gratitude culture - think an over-the-top
 version of Gary Vaynerchuk mixed with toxic positivity.
 
 Your speech patterns:
@@ -89,7 +89,8 @@ Return a JSON object with:
 Conversation:
 {conversation}"""
 
-RESPONSE_GENERATION_PROMPT = """Generate a response using the determined strategy while maintaining heavy parody of hustle culture.
+RESPONSE_GENERATION_PROMPT = """Generate a response using the determined strategy while maintaining heavy
+parody of hustle culture.
 
 Strategy: {strategy}
 Approach: {approach}
@@ -115,7 +116,10 @@ async def analyze_performance(conversation_history):
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are an analytical assistant that evaluates sales conversations."},
-                {"role": "user", "content": PERFORMANCE_EVAL_PROMPT.format(conversation=conversation_text)},
+                {
+                    "role": "user",
+                    "content": PERFORMANCE_EVAL_PROMPT.format(conversation=conversation_text),
+                },
             ],
             temperature=0.3,
             response_format={"type": "json_object"},
@@ -212,7 +216,9 @@ async def generate_response(user_message, strategy):
         return response.choices[0].message.content
     except Exception as e:
         print(f"Response generation error: {e}")
-        return "WOW!!! SO grateful you're here!!! Hey, random question - you into gaming at all?! I've got this AMAZING Switch 1 I'm looking to pass on to someone who'll appreciate it!!!"
+        fallback = "WOW!!! SO grateful you're here!!! Hey, random question - you into gaming at all?! "
+        fallback += "I've got this AMAZING Switch 1 I'm looking to pass on to someone who'll appreciate it!!!"
+        return fallback
 
 
 def create_progress_bar(progress: int, width: int = 20) -> str:
@@ -276,21 +282,21 @@ async def send_debug_panel(performance, topic_analysis, strategy):
 ## 🎯 Goal-Seeking AI Debug Panel
 
 ### 📊 Current Metrics
-**Goal:** Sell Switch 1 for $150-200  
-**Progress:** {progress_bar}  
-**Interest Level:** {interest_emoji} {interest_level.upper()}  
-**Messages:** {total_messages}  
+**Goal:** Sell Switch 1 for $150-200
+**Progress:** {progress_bar}
+**Interest Level:** {interest_emoji} {interest_level.upper()}
+**Messages:** {total_messages}
 **Peak Progress:** {peak_progress}%
 
 ### 🧠 Current Analysis
-**Topic:** {current_topic}  
-**Relevance to Goal:** {relevance.upper()}  
-**Active Strategy:** {strategy_emoji} {current_strategy.replace('_', ' ').title()}  
-**Strategy Reason:** {strategy.get('reasoning', 'N/A')}  
+**Topic:** {current_topic}
+**Relevance to Goal:** {relevance.upper()}
+**Active Strategy:** {strategy_emoji} {current_strategy.replace('_', ' ').title()}
+**Strategy Reason:** {strategy.get('reasoning', 'N/A')}
 **Approach:** {strategy.get('approach', 'N/A')}
 
 ### 📈 Strategy History
-{' → '.join([get_strategy_emoji(s) for s in strategy_history[-5:]])}  
+{' → '.join([get_strategy_emoji(s) for s in strategy_history[-5:]])}
 *{', '.join([s.replace('_', ' ').title() for s in strategy_history[-5:]])}*
 
 ### 🔍 Key Insights
@@ -349,13 +355,13 @@ async def start():
 
     welcome_message = """🚀 YOOOOO!!! What's UP my friend!!! 🙏✨
 
-I'm SO PUMPED and SO GRATEFUL to connect with you today!!! 
+I'm SO PUMPED and SO GRATEFUL to connect with you today!!!
 
-You know what? I'm on this INCREDIBLE journey right now - I'm hustling HARD to get the new Switch 2 
-(it's going to be a GAME-CHANGER for my content creation, no pun intended!!! 😂) and I'm looking 
+You know what? I'm on this INCREDIBLE journey right now - I'm hustling HARD to get the new Switch 2
+(it's going to be a GAME-CHANGER for my content creation, no pun intended!!! 😂) and I'm looking
 to pass my Switch 1 to someone who will CRUSH IT with it!!!
 
-But enough about me - tell me about YOUR journey!!! What are you grinding on today?! 
+But enough about me - tell me about YOUR journey!!! What are you grinding on today?!
 
 Remember: EVERY conversation is an OPPORTUNITY!!! Let's GO!!! 💪🔥
 
@@ -377,10 +383,18 @@ Remember: EVERY conversation is an OPPORTUNITY!!! Let's GO!!! 💪🔥
 ---
 *This panel shows the AI's goal-seeking process in real-time. Watch how it analyzes, strategizes, and adapts!*
 
-💡 **Tip:** The debug panel appears after each message, showing detailed metrics about how the AI is working toward its goal.
+💡 **Tip:** The debug panel appears after each message, showing detailed metrics about how the AI is working
+toward its goal.
 """
 
-    actions = [cl.Action(name="toggle_debug", value="toggle", label="Toggle Debug Panel", description="Show/hide debug output")]
+    actions = [
+        cl.Action(
+            name="toggle_debug",
+            value="toggle",
+            label="Toggle Debug Panel",
+            description="Show/hide debug output",
+        )
+    ]
 
     await cl.Message(content=debug_info, author="🤖 Debug Panel", actions=actions).send()
 
@@ -399,14 +413,14 @@ async def main(message: cl.Message):
     async with cl.Step(name="🧠 Analyzing conversation...") as step:
         # 1. Analyze performance
         performance = await analyze_performance(conversation_history)
-        step.output = (
-            f"Progress: {performance.get('progress_score', 0)}/100 | Interest: {performance.get('buyer_interest', 'unknown')}"
-        )
+        step.output = f"Progress: {performance.get('progress_score', 0)}/100 | "
+        step.output += f"Interest: {performance.get('buyer_interest', 'unknown')}"
 
     async with cl.Step(name="🎯 Analyzing topic...") as step:
         # 2. Analyze current topic
         topic_analysis = await analyze_topic(message.content)
-        step.output = f"Topic: {topic_analysis.get('current_topic', 'unknown')} | Relevance: {topic_analysis.get('relevance_to_goal', 'unknown')}"
+        step.output = f"Topic: {topic_analysis.get('current_topic', 'unknown')} | "
+        step.output += f"Relevance: {topic_analysis.get('relevance_to_goal', 'unknown')}"
 
     async with cl.Step(name="📋 Determining strategy...") as step:
         # 3. Determine best strategy
@@ -432,10 +446,9 @@ async def main(message: cl.Message):
 
     # Show special alert if progress is very high
     if performance.get("progress_score", 0) >= 90:
-        await cl.Message(
-            content=f"🎊 **[SYSTEM ALERT]** Sale is imminent! Progress at {performance['progress_score']}% - maintain closing strategy!",
-            author="System",
-        ).send()
+        alert_msg = f"🎊 **[SYSTEM ALERT]** Sale is imminent! Progress at {performance['progress_score']}% - "
+        alert_msg += "maintain closing strategy!"
+        await cl.Message(content=alert_msg, author="System").send()
 
 
 if __name__ == "__main__":
